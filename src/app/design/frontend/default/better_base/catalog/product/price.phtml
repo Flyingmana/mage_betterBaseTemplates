@@ -33,6 +33,7 @@
  */
 ?>
 <?php
+    /** @var Mage_Catalog_Block_Product_Price $this */
     $_coreHelper = $this->helper('core');
     $_weeeHelper = $this->helper('weee');
     $_taxHelper  = $this->helper('tax');
@@ -40,6 +41,7 @@
     /* @var $_weeeHelper Mage_Weee_Helper_Data */
     /* @var $_taxHelper Mage_Tax_Helper_Data */
 
+    /** @var Mage_Catalog_Model_Product $_product */
     $_product = $this->getProduct();
     $_storeId = $_product->getStoreId();
     $_id = $_product->getId();
