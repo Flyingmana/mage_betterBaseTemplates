@@ -313,15 +313,9 @@
 <?php else: /* if (!$_product->isGrouped()): */ ?>
     <?php
         $showMinPrice = $this->getDisplayMinimalPrice();
-        if ($showMinPrice && $_minimalPriceValue) {
-            $_exclTax = $_taxHelper->getPrice($_product, $_minimalPriceValue);
-            $_inclTax = $_taxHelper->getPrice($_product, $_minimalPriceValue, true);
-            $price    = $showMinPrice ? $_minimalPriceValue : 0;
-        } else {
-            $price    = $_product->getFinalPrice();
-            $_exclTax = $_taxHelper->getPrice($_product, $price);
-            $_inclTax = $_taxHelper->getPrice($_product, $price, true);
-        }
+        $price = ($showMinPrice && $_minimalPriceValue) ? $_minimalPriceValue : $_product->getFinalPrice();
+        $_exclTax = $_taxHelper->getPrice($_product, $price);
+        $_inclTax = $_taxHelper->getPrice($_product, $price, true);
     ?>
     <?php if ($price): ?>
         <div class="price-box">
@@ -333,13 +327,7 @@
                     <?php $f_priceLabelPairWithWrapper($_exclTax,"excluding"); ?>
                     <?php $f_priceLabelPairWithWrapper($_inclTax,"including"); ?>
                 <?php else: ?>
-                    <?php
-                    $_showPrice = $_inclTax;
-                    if (!$_taxHelper->displayPriceIncludingTax()) {
-                        $_showPrice = $_exclTax;
-                    }
-                    ?>
-                <?=$f_returnPrice( $_showPrice, 'product-minimal-price-')?>
+                    <?=$f_returnPrice( (!$_taxHelper->displayPriceIncludingTax()) ? $_exclTax : $_inclTax, 'product-minimal-price-')?>
                 <?php endif; ?>
             </p>
         </div>
