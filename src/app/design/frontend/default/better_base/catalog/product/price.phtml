@@ -95,6 +95,20 @@
         <?php
     };
 
+
+    $f_returnWee = function($_weeeTaxAttributes) use ($_weeeSeparator,$_coreHelper){
+        $result = "";
+        $result .= '<span class="weee">(';
+        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute):
+            $result .= $_weeeSeparator;
+            $result .= $_weeeTaxAttribute->getName() 
+              . ':' 
+              . $_coreHelper->currency($_weeeTaxAttribute->getAmount() + $_weeeTaxAttribute->getTaxAmount(), true, true);
+            $_weeeSeparator = ' + ';
+        endforeach;
+        $result .= ')</span>';
+    }
+
 ?>
 
 <?php if (!$_product->isGrouped()): ?>
