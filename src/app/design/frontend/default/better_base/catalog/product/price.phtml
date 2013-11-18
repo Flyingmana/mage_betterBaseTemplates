@@ -96,14 +96,18 @@
     };
 
 
-    $f_returnWee = function($_weeeTaxAttributes) use ($_weeeSeparator,$_coreHelper){
+    $f_returnWeee = function($_weeeTaxAttributes, $addTaxAmount = false) use ($_weeeSeparator,$_coreHelper){
         $result = "";
         $result .= '<span class="weee">(';
         foreach ($_weeeTaxAttributes as $_weeeTaxAttribute):
+            $amount = $_weeeTaxAttribute->getAmount();
+            if($addTaxAmount){
+                $amount += $_weeeTaxAttribute->getTaxAmount();
+            }
             $result .= $_weeeSeparator;
             $result .= $_weeeTaxAttribute->getName() 
-              . ':' 
-              . $_coreHelper->currency($_weeeTaxAttribute->getAmount() + $_weeeTaxAttribute->getTaxAmount(), true, true);
+              . ': '
+              . $_coreHelper->currency($amount, true, true);
             $_weeeSeparator = ' + ';
         endforeach;
         $result .= ')</span>';
@@ -136,26 +140,14 @@
                 <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
             <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 1)): // incl. + weee ?>
                 <?php $f_priceLabelPairWithWrapper($_price + $_weeeTaxAmount,"excluding"); ?>
-                <span class="weee">(
-                <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                    <?php echo $_weeeSeparator; ?>
-                    <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount(), true, true); ?>
-                    <?php $_weeeSeparator = ' + '; ?>
-                    <?php endforeach; ?>
-                )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes)?>
                 <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
             <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 4)): // incl. + weee ?>
                 <?php $f_priceLabelPairWithWrapper($_price + $_weeeTaxAmount,"excluding"); ?>
                 <span class="price-including-tax">
                     <span class="label"><?php echo $this->helper('tax')->__('Incl. Tax:') ?></span>
                     <?=$f_returnPrice( $_finalPriceInclTax + $_weeeTaxAmountInclTaxes, 'price-including-tax-')?>
-                    <span class="weee">(
-                        <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                            <?php echo $_weeeSeparator; ?>
-                            <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount() + $_weeeTaxAttribute->getTaxAmount(), true, true); ?>
-                            <?php $_weeeSeparator = ' + '; ?>
-                        <?php endforeach; ?>
-                        )</span>
+                    <?=$f_returnWeee($_weeeTaxAttributes, true)?>
                 </span>
             <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 2)): // excl. + weee + final ?>
                 <?php $f_priceLabelPairWithWrapper($_price,"excluding"); ?>
@@ -178,24 +170,12 @@
                 <span class="regular-price" id="product-price-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
                     <?php echo $_coreHelper->currency($_price + $_weeeTaxAmount, true, true) ?>
                 </span>
-                <span class="weee">(
-                    <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                        <?php echo $_weeeSeparator; ?>
-                        <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount(), true, true); ?>
-                        <?php $_weeeSeparator = ' + '; ?>
-                    <?php endforeach; ?>
-                    )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes)?>
             <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 4)): // incl. + weee ?>
                 <span class="regular-price" id="product-price-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
                     <?php echo $_coreHelper->currency($_price + $_weeeTaxAmount, true, true) ?>
                 </span>
-                <span class="weee">(
-                    <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                        <?php echo $_weeeSeparator; ?>
-                        <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount() + $_weeeTaxAttribute->getTaxAmount(), true, true); ?>
-                        <?php $_weeeSeparator = ' + '; ?>
-                    <?php endforeach; ?>
-                    )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes, true)?>
             <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 2)): // excl. + weee + final ?>
                 <span class="regular-price"><?php echo $_coreHelper->currency($_price,true,true) ?></span><br />
                 <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
@@ -248,28 +228,14 @@
             <?php if ($_taxHelper->displayBothPrices()): ?>
                 <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
                 <?php $f_priceLabelPairWithWrapper($_finalPrice + $_weeeTaxAmount,"excluding"); ?>
-                <span class="weee">(
-                    <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                        <?php echo $_weeeSeparator; ?>
-                        <?php echo $_weeeTaxAttribute->getName(); ?>
-                        : <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount(), true, true); ?>
-                        <?php $_weeeSeparator = ' + '; ?>
-                        <?php endforeach; ?>
-                    )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes)?>
                 <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
             <?php else: ?>
                 <p class="special-price">
                 <span class="price-label"><?php echo $this->__('Special Price:') ?></span>
                     <?=$f_returnPrice( $_finalPrice + $_weeeTaxAmountInclTaxes, 'product-price-')?>
                 </p>
-                <span class="weee">(
-                <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                    <?php echo $_weeeSeparator; ?>
-                    <?php echo $_weeeTaxAttribute->getName(); ?>
-                    : <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount(), true, true); ?>
-                    <?php $_weeeSeparator = ' + '; ?>
-                    <?php endforeach; ?>
-                )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes)?>
             <?php endif; ?>
         </p>
         <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 4)): // incl. + weee ?>
@@ -281,13 +247,7 @@
             <p class="special-price">
                 <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
                 <?php $f_priceLabelPairWithWrapper($_finalPrice + $_weeeTaxAmount,"excluding"); ?>
-            <span class="weee">(
-                <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
-                    <?php echo $_weeeSeparator; ?>
-                    <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount() + $_weeeTaxAttribute->getTaxAmount(), true, true); ?>
-                    <?php $_weeeSeparator = ' + '; ?>
-                <?php endforeach; ?>
-                )</span>
+                <?=$f_returnWeee($_weeeTaxAttributes, true)?>
                 <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
             </p>
         <?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 2)): // excl. + weee + final ?>
