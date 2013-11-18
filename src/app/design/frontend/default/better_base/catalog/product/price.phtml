@@ -51,18 +51,20 @@
     $_minimalPrice = $_taxHelper->getPrice($_product, $_minimalPriceValue, $_simplePricesTax);
     $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 ?>
-
 <?php
+
+    /* needed workaround for using block in anonymous function */
+    $thisBlock = $this;
 
     /**
      * @param $label
      * @param $priceContent
      * @param $priceIdPrefix
      */
-    $f_priceLabelPair = function( $label, $priceContent, $priceIdPrefix) use($_id,$this){
+    $f_priceLabelPair = function( $label, $priceContent, $priceIdPrefix) use($_id,$thisBlock){
         ?>
             <span class="label"><?=$label?></span>
-            <span class="price" id="<?=$priceIdPrefix?><?=$_id?><?=$this->getIdSuffix()?>">
+            <span class="price" id="<?=$priceIdPrefix?><?=$_id?><?=$thisBlock->getIdSuffix()?>">
                 <?=$priceContent?>
             </span>
         <?php
