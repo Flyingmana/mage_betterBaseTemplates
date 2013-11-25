@@ -195,24 +195,7 @@
     <?php endif; /* if ($_finalPrice == $_price): */ ?>
 
     <?php if ($this->getDisplayMinimalPrice() && $_minimalPriceValue && $_minimalPriceValue < $_product->getFinalPrice()): ?>
-
-        <?php $_minimalPriceDisplayValue = $_minimalPrice; ?>
-        <?php if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, array(0, 1, 4))): ?>
-            <?php $_minimalPriceDisplayValue = $_minimalPrice + $_weeeTaxAmount; ?>
-        <?php endif; ?>
-
-        <?php if ($this->getUseLinkForAsLowAs()):?>
-        <a href="<?php echo $_product->getProductUrl(); ?>" class="minimal-price-link">
-        <?php else:?>
-        <span class="minimal-price-link">
-        <?php endif?>
-            <span class="label"><?php echo $this->__('As low as:') ?></span>
-            <?=$f_returnPrice( $_minimalPriceDisplayValue, 'product-minimal-price-')?>
-        <?php if ($this->getUseLinkForAsLowAs()):?>
-        </a>
-        <?php else:?>
-        </span>
-        <?php endif?>
+        <?php include "price/minimal_price.phtml"; ?>
     <?php endif; /* if ($this->getDisplayMinimalPrice() && $_minimalPrice && $_minimalPrice < $_finalPrice): */ ?>
     </div>
 
