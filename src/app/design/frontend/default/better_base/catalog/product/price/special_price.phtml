@@ -1,0 +1,90 @@
+
+
+<?php $_originalWeeeTaxAmount = $_weeeHelper->getOriginalAmount($_product); ?>
+
+<?php if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 0)): // including ?>
+    <p class="old-price">
+        <span class="price-label"><?php echo $this->__('Regular Price:') ?></span>
+        <?=$f_returnPrice( $_regularPrice + $_originalWeeeTaxAmount, 'old-price-')?>
+    </p>
+
+    <?php if ($_taxHelper->displayBothPrices()): ?>
+        <p class="special-price">
+            <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+            <?php $f_priceLabelPairWithWrapper($_finalPrice + $_weeeTaxAmount,"excluding"); ?>
+            <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
+        </p>
+    <?php else: ?>
+    <p class="special-price">
+        <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+        <?=$f_returnPrice( $_finalPrice + $_weeeTaxAmountInclTaxes, 'product-price-')?>
+    </p>
+    <?php endif; ?>
+
+<?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 1)): // incl. + weee ?>
+    <p class="old-price">
+        <span class="price-label"><?php echo $this->__('Regular Price:') ?></span>
+        <?=$f_returnPrice( $_regularPrice + $_originalWeeeTaxAmount, 'old-price-')?>
+    </p>
+
+<p class="special-price">
+    <?php if ($_taxHelper->displayBothPrices()): ?>
+        <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+        <?php $f_priceLabelPairWithWrapper($_finalPrice + $_weeeTaxAmount,"excluding"); ?>
+        <?=$f_returnWeee($_weeeTaxAttributes)?>
+        <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
+    <?php else: ?>
+        <p class="special-price">
+        <span class="price-label"><?php echo $this->__('Special Price:') ?></span>
+            <?=$f_returnPrice( $_finalPrice + $_weeeTaxAmountInclTaxes, 'product-price-')?>
+        </p>
+        <?=$f_returnWeee($_weeeTaxAttributes)?>
+    <?php endif; ?>
+</p>
+<?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 4)): // incl. + weee ?>
+    <p class="old-price">
+        <span class="price-label"><?php echo $this->__('Regular Price:') ?></span>
+        <?=$f_returnPrice( $_regularPrice + $_originalWeeeTaxAmount, 'old-price-')?>
+    </p>
+
+    <p class="special-price">
+        <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+        <?php $f_priceLabelPairWithWrapper($_finalPrice + $_weeeTaxAmount,"excluding"); ?>
+        <?=$f_returnWeee($_weeeTaxAttributes, true)?>
+        <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
+    </p>
+<?php elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 2)): // excl. + weee + final ?>
+    <p class="old-price">
+        <span class="price-label"><?php echo $this->__('Regular Price:') ?></span>
+        <?=$f_returnPrice( $_regularPrice, 'old-price-')?>
+    </p>
+
+    <p class="special-price">
+        <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+        <?php $f_priceLabelPairWithWrapper($_finalPrice,"excluding"); ?>
+        <?php foreach ($_weeeTaxAttributes as $_weeeTaxAttribute): ?>
+            <span class="weee">
+                <?php echo $_weeeTaxAttribute->getName(); ?>: <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount(), true, true); ?>
+            </span>
+        <?php endforeach; ?>
+        <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax + $_weeeTaxAmountInclTaxes,"including"); ?>
+    </p>
+<?php else: // excl. ?>
+    <p class="old-price">
+        <span class="price-label"><?php echo $this->__('Regular Price:') ?></span>
+        <?=$f_returnPrice( $_regularPrice, 'old-price-')?>
+    </p>
+
+    <?php if ($_taxHelper->displayBothPrices()): ?>
+        <p class="special-price">
+            <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+            <?php $f_priceLabelPairWithWrapper($_finalPrice,"excluding"); ?>
+            <?php $f_priceLabelPairWithWrapper($_finalPriceInclTax,"including"); ?>
+        </p>
+    <?php else: ?>
+    <p class="special-price">
+        <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
+        <?=$f_returnPrice( $_finalPrice, 'product-price-')?>
+    </p>
+    <?php endif; ?>
+<?php endif; ?>
