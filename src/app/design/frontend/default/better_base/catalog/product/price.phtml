@@ -311,25 +311,5 @@
     </div>
 
 <?php else: /* if (!$_product->isGrouped()): */ ?>
-    <?php
-        $showMinPrice = $this->getDisplayMinimalPrice();
-        $price = ($showMinPrice && $_minimalPriceValue) ? $_minimalPriceValue : $_product->getFinalPrice();
-        $_exclTax = $_taxHelper->getPrice($_product, $price);
-        $_inclTax = $_taxHelper->getPrice($_product, $price, true);
-    ?>
-    <?php if ($price): ?>
-        <div class="price-box">
-            <p<?php if ($showMinPrice): ?> class="minimal-price"<?php endif ?>>
-                <?php if ($showMinPrice): ?>
-                <span class="price-label"><?php echo $this->__('Starting at:') ?></span>
-                <?php endif ?>
-                <?php if ($_taxHelper->displayBothPrices()): ?>
-                    <?php $f_priceLabelPairWithWrapper($_exclTax,"excluding"); ?>
-                    <?php $f_priceLabelPairWithWrapper($_inclTax,"including"); ?>
-                <?php else: ?>
-                    <?=$f_returnPrice( (!$_taxHelper->displayPriceIncludingTax()) ? $_exclTax : $_inclTax, 'product-minimal-price-')?>
-                <?php endif; ?>
-            </p>
-        </div>
-    <?php endif; /* if ($this->getDisplayMinimalPrice() && $_minimalPrice): */ ?>
+    <?php include 'price/is_grouped.phtml'; ?>
 <?php endif; /* if (!$_product->isGrouped()): */ ?>
